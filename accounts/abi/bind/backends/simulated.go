@@ -70,7 +70,7 @@ func NewSimulatedBackend(alloc core.GenesisAlloc) *SimulatedBackend {
 		Signer: hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
 	}
 	genesis.MustCommit(database)
-	blockchain, err := core.NewBlockChain(database, nil, genesis.Config, clique.NewFaker(), vm.Config{})
+	blockchain, err := core.NewBlockChain(context.Background(), database, nil, genesis.Config, clique.NewFaker(), vm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -164,7 +164,7 @@ func (b *SimulatedBackend) StorageAt(ctx context.Context, contract common.Addres
 
 // TransactionReceipt returns the receipt of a transaction.
 func (b *SimulatedBackend) TransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error) {
-	receipt, _, _, _ := core.GetReceipt(b.database.ReceiptTable(), txHash)
+	receipt, _, _, _ := core.GetReceipt(ctx, b.database, txHash)
 	return receipt, nil
 }
 
